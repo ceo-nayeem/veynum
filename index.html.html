@@ -871,6 +871,88 @@ addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(o
 addEventListener('resize',onScroll);
 totop.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
 
+/* ===== Click sound: a crisp futuristic "tick" + crystal ring, thrown into a long ping-pong echo and a reverb tail =====
+   Built live with the Web Audio API (no audio files). Echo bounces left (red) -> right (blue) -> left ... and each repeat gets darker and quieter. */
+/*SND-START*/
+function makeClickSound(ctx){
+  var out=ctx.createGain();out.gain.value=1.1;
+  var comp=ctx.createDynamicsCompressor();                       /* keeps fast repeated clicks from clipping */
+  comp.threshold.value=-16;comp.knee.value=12;comp.ratio.value=6;comp.attack.value=.002;comp.release.value=.3;
+  out.connect(comp);comp.connect(ctx.destination);
+  var dry=ctx.createGain();dry.gain.value=1.7;dry.connect(out);   /* the click itself is the loudest thing; echoes sit behind it */
+
+  function pan(v){if(ctx.createStereoPanner){var p=ctx.createStereoPanner();p.pan.value=v;return p}return ctx.createGain()}
+
+  /* echo: ping-pong delay. TIME = gap between repeats, FB = how much of each repeat survives (higher = longer echo) */
+  var TIME=.3,FB=.64,send=ctx.createGain();send.gain.value=.28;
+  var dL=ctx.createDelay(2),dR=ctx.createDelay(2);dL.delayTime.value=TIME;dR.delayTime.value=TIME;
+  var lpA=ctx.createBiquadFilter(),lpB=ctx.createBiquadFilter();
+  lpA.type='lowpass';lpB.type='lowpass';lpA.frequency.value=3400;lpB.frequency.value=3400;
+  var fbA=ctx.createGain(),fbB=ctx.createGain();fbA.gain.value=FB;fbB.gain.value=FB;
+  var echoOut=ctx.createGain();echoOut.gain.value=.75;
+  var pL=pan(-.85),pR=pan(.85);
+  send.connect(dL);
+  dL.connect(pL);pL.connect(echoOut);
+  dL.connect(lpA);lpA.connect(fbA);fbA.connect(dR);
+  dR.connect(pR);pR.connect(echoOut);
+  dR.connect(lpB);lpB.connect(fbB);fbB.connect(dL);
+  echoOut.connect(out);
+
+  /* reverb: a generated 3-second room that fades and darkens, so the echoes blur into a glowing tail */
+  var rev=ctx.createConvolver(),sr=ctx.sampleRate,len=Math.floor(sr*3),ir=ctx.createBuffer(2,len,sr);
+  for(var c=0;c<2;c++){var d=ir.getChannelData(c),lp=0;
+    for(var i=0;i<len;i++){var k=i/len,env=Math.pow(1-k,3.4)*Math.min(1,i/(sr*.012));
+      lp+=((Math.random()*2-1)-lp)*(.55-.4*k);d[i]=lp*env}}
+  rev.buffer=ir;
+  var revIn=ctx.createGain(),revOut=ctx.createGain();revIn.gain.value=.55;revOut.gain.value=.9;
+  send.connect(revIn);echoOut.connect(revIn);revIn.connect(rev);rev.connect(revOut);revOut.connect(out);
+
+  /* short noise burst = the "tick" */
+  var nb=ctx.createBuffer(1,Math.floor(sr*.06),sr),nd=nb.getChannelData(0);
+  for(var n=0;n<nd.length;n++)nd[n]=Math.random()*2-1;
+
+  var last=-1;
+  return function play(x){                                       /* x: 0 = left edge of screen ... 1 = right edge */
+    var t=ctx.currentTime+.006;
+    if(t-last<.04)return;last=t;
+    var det=1+(Math.random()-.5)*.06,tone=.92+x*.16;             /* tiny random detune, a bit higher toward the blue side */
+    var v=ctx.createGain();v.connect(send);                      /* tick + ring feed the echo */
+    var p=pan((x-.5)*1.2);p.connect(dry);v.connect(p);
+
+    var ns=ctx.createBufferSource();ns.buffer=nb;
+    var hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=3000*det;
+    var ng=ctx.createGain();
+    ng.gain.setValueAtTime(.0001,t);ng.gain.exponentialRampToValueAtTime(.55,t+.0015);ng.gain.exponentialRampToValueAtTime(.0001,t+.035);
+    ns.connect(hp);hp.connect(ng);ng.connect(v);ns.start(t);ns.stop(t+.06);
+
+    var o=ctx.createOscillator();o.type='sine';                  /* falling "blip" */
+    o.frequency.setValueAtTime(2100*tone*det,t);o.frequency.exponentialRampToValueAtTime(720*tone*det,t+.075);
+    var og=ctx.createGain();
+    og.gain.setValueAtTime(.0001,t);og.gain.exponentialRampToValueAtTime(.42,t+.003);og.gain.exponentialRampToValueAtTime(.0001,t+.14);
+    o.connect(og);og.connect(v);o.start(t);o.stop(t+.16);
+
+    [[2640,.13,.55],[3961,.07,.38]].forEach(function(r){         /* glassy crystal ring (a root + a fifth) */
+      var q=ctx.createOscillator();q.type='sine';q.frequency.value=r[0]*tone*det;
+      var qg=ctx.createGain();
+      qg.gain.setValueAtTime(.0001,t);qg.gain.exponentialRampToValueAtTime(r[1],t+.004);qg.gain.exponentialRampToValueAtTime(.0001,t+r[2]);
+      q.connect(qg);qg.connect(v);q.start(t);q.stop(t+r[2]+.02)});
+
+    var th=ctx.createOscillator();th.type='sine';                /* low thump, dry only (keeps the echoes clean) */
+    th.frequency.setValueAtTime(190,t);th.frequency.exponentialRampToValueAtTime(52,t+.12);
+    var tg=ctx.createGain();
+    tg.gain.setValueAtTime(.0001,t);tg.gain.exponentialRampToValueAtTime(.5,t+.004);tg.gain.exponentialRampToValueAtTime(.0001,t+.17);
+    th.connect(tg);tg.connect(p);th.start(t);th.stop(t+.19);
+  };
+}
+/*SND-END*/
+var AC=window.AudioContext||window.webkitAudioContext,sctx=null,snd=null;
+function clickSound(x){                                          /* created on the first click, because browsers only allow audio after a user gesture */
+  if(!AC)return;
+  try{if(!sctx){sctx=new AC();snd=makeClickSound(sctx)}
+      if(sctx.state==='suspended')sctx.resume();
+      snd(x)}catch(e){}
+}
+
 /* ===== pointer effects ===== */
 if(fine){
   var spot=$('#spot'),vc=$('#vcur'),vm=$('#vm'),v1=$('#vt1'),v2=$('#vt2'),rots=$$('.vrot',vc),
@@ -887,8 +969,8 @@ if(fine){
     vc.classList.toggle('hover',!!(e.target.closest&&e.target.closest(HOV)));
   });
   document.addEventListener('mouseout',function(e){if(!e.relatedTarget)vc.classList.remove('on')});
-  document.addEventListener('mousedown',function(){
-    vc.classList.add('down');
+  document.addEventListener('mousedown',function(e){
+    vc.classList.add('down');clickSound(e.clientX/innerWidth);
     ['','b'].forEach(function(c,i){var d=document.createElement('i');d.className='vburst '+c;d.style.animationDelay=(i*.09)+'s';vm.firstChild.appendChild(d);setTimeout(function(){d.remove()},900)});
   });
   document.addEventListener('mouseup',function(){vc.classList.remove('down')});
