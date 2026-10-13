@@ -57,14 +57,47 @@ h3{font-size:20px}
 #gl{position:fixed;inset:0;z-index:2;pointer-events:none;width:100%;height:100%;opacity:0;transition:opacity .5s}
 .spot{position:fixed;z-index:1;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 65%);opacity:0;transition:opacity .4s}
 .progress{position:fixed;left:0;top:0;height:3px;width:0;background:var(--grad);z-index:90;box-shadow:0 0 14px rgba(255,43,58,.6)}
-.cur{position:fixed;left:0;top:0;z-index:100;pointer-events:none;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:1px solid rgba(255,255,255,.55);mix-blend-mode:difference;transition:width .25s,height .25s,margin .25s,background .25s;display:none}
-.cur.big{width:64px;height:64px;margin:-32px 0 0 -32px;background:rgba(255,255,255,.12)}
-.has-cur .cur{display:block}.has-cur,.has-cur a,.has-cur button{cursor:none}
 .wipe{position:fixed;inset:0;z-index:200;pointer-events:none;display:flex}
 .wipe i{flex:1;transform:scaleY(0);transform-origin:bottom;transition:transform .5s cubic-bezier(.7,0,.2,1)}
 .wipe i:nth-child(odd){background:#ff2b3a}.wipe i:nth-child(even){background:#20b8ff}
 .wipe.go i{transform:scaleY(1)}
 .wipe.go i:nth-child(2){transition-delay:.05s}.wipe.go i:nth-child(3){transition-delay:.1s}.wipe.go i:nth-child(4){transition-delay:.15s}.wipe.go i:nth-child(5){transition-delay:.2s}
+
+
+/* ===== V cursor: tip of the V (bottom point) is the pointer hotspot ===== */
+.has-cur,.has-cur *{cursor:none!important}
+.vcur{position:fixed;inset:0;z-index:300;pointer-events:none;opacity:0;transition:opacity .25s}
+.vcur.on{opacity:1}
+.vc{position:fixed;left:0;top:0;width:40px;height:33px;margin:-33px 0 0 -20px;will-change:transform}
+.vrot{position:relative;width:100%;height:100%;transform-origin:50% 100%;will-change:transform}
+.vs{position:relative;width:100%;height:100%;transform-origin:50% 100%;transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.vs svg{width:100%;height:100%;display:block;overflow:visible;position:relative;z-index:2}
+.vl,.vr{transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.vl{filter:drop-shadow(0 0 3px rgba(255,43,58,.95)) drop-shadow(0 0 9px rgba(255,43,58,.7));animation:vflL 3.2s ease-in-out infinite}
+.vr{filter:drop-shadow(0 0 3px rgba(32,184,255,.95)) drop-shadow(0 0 9px rgba(32,184,255,.7));animation:vflR 3.2s ease-in-out infinite -1.6s}
+@keyframes vflL{50%{filter:drop-shadow(0 0 2px rgba(255,43,58,.85)) drop-shadow(0 0 17px rgba(255,43,58,1))}}
+@keyframes vflR{50%{filter:drop-shadow(0 0 2px rgba(32,184,255,.85)) drop-shadow(0 0 17px rgba(32,184,255,1))}}
+.vglow{position:absolute;left:-32px;top:-36px;width:104px;height:104px;border-radius:50%;pointer-events:none;background:radial-gradient(circle at 36% 50%,rgba(255,43,58,.4),transparent 52%),radial-gradient(circle at 64% 50%,rgba(32,184,255,.4),transparent 52%);animation:vpulse 2.6s ease-in-out infinite;transition:transform .35s,opacity .3s}
+@keyframes vpulse{50%{opacity:.55;transform:scale(1.15)}}
+.vtip{position:absolute;left:18px;top:31px;width:4px;height:4px;border-radius:50%;background:#fff;z-index:3;box-shadow:-1.5px 0 4px 0 rgba(255,43,58,.95),1.5px 0 4px 0 rgba(32,184,255,.95);animation:vtip 1.6s ease-in-out infinite}
+@keyframes vtip{50%{transform:scale(1.4);opacity:.75}}
+.vt1 .vs{opacity:.42;filter:blur(.7px)}.vt2 .vs{opacity:.2;filter:blur(1.4px)}
+.vring,.vburst{position:absolute;left:6px;top:19px;width:28px;height:28px;border-radius:50%;border:1.5px solid #ff2b3a;box-shadow:0 0 12px #ff2b3a,inset 0 0 8px #ff2b3a;opacity:0;pointer-events:none}
+.vring.b,.vburst.b{border-color:#20b8ff;box-shadow:0 0 12px #20b8ff,inset 0 0 8px #20b8ff}
+.vburst{border-width:2px;animation:vburst .7s ease-out forwards}
+@keyframes vburst{from{transform:scale(.2);opacity:1}to{transform:scale(3.4);opacity:0}}
+@keyframes vring{from{transform:scale(.25);opacity:.9}to{transform:scale(2.5);opacity:0}}
+/* hover on links, buttons, inputs: V grows, splits open, glows brighter, rings pulse from the tip */
+.vcur.hover .vm .vs{transform:scale(1.4)}
+.vcur.hover .vm .vl{transform:translateX(-2.4px)}
+.vcur.hover .vm .vr{transform:translateX(2.4px)}
+.vcur.hover .vglow{animation:none;opacity:1;transform:scale(1.6)}
+.vcur.hover .vring{animation:vring 1.3s ease-out infinite}
+.vcur.hover .vring.b{animation-delay:.65s}
+/* press */
+.vcur.down .vm .vs{transform:scale(.8)}
+.vcur.down .vm .vl{transform:translateX(1px)}
+.vcur.down .vm .vr{transform:translateX(-1px)}
 
 /* ===== buttons ===== */
 .btn{display:inline-flex;align-items:center;gap:10px;padding:13px 24px;border-radius:999px;font-weight:600;font-size:14.5px;transition:box-shadow .3s,background .3s,border-color .3s;white-space:nowrap;position:relative}
@@ -416,13 +449,13 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;background:rgba(5,5,
 <canvas id="gl" aria-hidden="true"></canvas>
 <div class="noise" aria-hidden="true"></div>
 <div class="spot" id="spot" aria-hidden="true"></div>
-<div class="cur" id="cur" aria-hidden="true"></div>
+<div class="vcur" id="vcur" aria-hidden="true"><div class="vc vt2" id="vt2"><div class="vrot"><div class="vs"><svg viewBox="0 0 48 40" aria-hidden="true"><g class="vl"><polygon points="1.5,0 18.1,6.6 23.1,16 23.1,29.5 23.9,40" fill="url(#vgL)" stroke="rgba(255,215,218,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="18.1,6.6 23.1,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="1.5,0 23.1,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g><g class="vr"><polygon points="46.5,0 29.9,6.6 24.9,16 24.9,29.5 24.1,40" fill="url(#vgR)" stroke="rgba(215,240,255,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="29.9,6.6 24.9,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="46.5,0 24.9,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g></svg></div></div></div><div class="vc vt1" id="vt1"><div class="vrot"><div class="vs"><svg viewBox="0 0 48 40" aria-hidden="true"><g class="vl"><polygon points="1.5,0 18.1,6.6 23.1,16 23.1,29.5 23.9,40" fill="url(#vgL)" stroke="rgba(255,215,218,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="18.1,6.6 23.1,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="1.5,0 23.1,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g><g class="vr"><polygon points="46.5,0 29.9,6.6 24.9,16 24.9,29.5 24.1,40" fill="url(#vgR)" stroke="rgba(215,240,255,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="29.9,6.6 24.9,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="46.5,0 24.9,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g></svg></div></div></div><div class="vc vm" id="vm"><div class="vrot"><div class="vglow"></div><div class="vs"><svg viewBox="0 0 48 40" aria-hidden="true"><g class="vl"><polygon points="1.5,0 18.1,6.6 23.1,16 23.1,29.5 23.9,40" fill="url(#vgL)" stroke="rgba(255,215,218,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="18.1,6.6 23.1,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="1.5,0 23.1,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g><g class="vr"><polygon points="46.5,0 29.9,6.6 24.9,16 24.9,29.5 24.1,40" fill="url(#vgR)" stroke="rgba(215,240,255,.95)" stroke-width=".6" stroke-linejoin="round"/><polyline points="29.9,6.6 24.9,29.5" fill="none" stroke="rgba(255,255,255,.4)" stroke-width=".4"/><polyline points="46.5,0 24.9,16" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".4"/></g></svg></div><i class="vring"></i><i class="vring b"></i><i class="vtip"></i></div></div></div>
 <div class="progress" id="progress"></div>
 <div class="wipe" id="wipe" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2b3a"/><stop offset="1" stop-color="#20b8ff"/></linearGradient></defs>
+  <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2b3a"/><stop offset="1" stop-color="#20b8ff"/></linearGradient><linearGradient id="vgL" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#ff6b76"/><stop offset=".65" stop-color="#ff2b3a"/><stop offset="1" stop-color="#8a0015"/></linearGradient><linearGradient id="vgR" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#8fdcff"/><stop offset=".65" stop-color="#20b8ff"/><stop offset="1" stop-color="#0a4fa0"/></linearGradient></defs>
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6M15.5 14.2c3 .2 5.5 2 5.5 4.8"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5C4 4.7 4.7 4 5.5 4H11v15H5.5A1.5 1.5 0 0 0 4 20.5zM20 5.5c0-.8-.7-1.5-1.5-1.5H13v15h5.5c.8 0 1.5.7 1.5 1.5z"/></symbol>
   <symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3.5 17.5a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.1-.6-.6-2.1z"/></symbol>
@@ -840,15 +873,31 @@ totop.addEventListener('click',function(){scrollTo({top:0,behavior:'smooth'})});
 
 /* ===== pointer effects ===== */
 if(fine){
-  var spot=$('#spot'),cu=$('#cur'),cx=-100,cy=-100,tx=-100,ty=-100;
+  var spot=$('#spot'),vc=$('#vcur'),vm=$('#vm'),v1=$('#vt1'),v2=$('#vt2'),rots=$$('.vrot',vc),
+      tx=-100,ty=-100,g1x=-100,g1y=-100,g2x=-100,g2y=-100,lx=-100,rot=0,seen=false,HOV='a,button,input,select,textarea,label,.hg';
+  function put(el,x,y){el.style.transform='translate3d('+x+'px,'+y+'px,0)'}
   document.documentElement.classList.add('has-cur');
   document.addEventListener('mousemove',function(e){
-    tx=e.clientX;ty=e.clientY;spot.style.opacity=1;spot.style.left=tx+'px';spot.style.top=ty+'px';
+    tx=e.clientX;ty=e.clientY;
+    if(!seen){seen=true;g1x=g2x=lx=tx;g1y=g2y=ty}
+    vc.classList.add('on');put(vm,tx,ty);   /* the V's bottom tip sits exactly on the pointer position */
+    spot.style.opacity=1;spot.style.left=tx+'px';spot.style.top=ty+'px';
     var t=e.target.closest&&e.target.closest('.panel,.portal');
     if(t){var b=t.getBoundingClientRect();t.style.setProperty('--mx',(e.clientX-b.left)+'px');t.style.setProperty('--my',(e.clientY-b.top)+'px')}
-    cu.classList.toggle('big',!!(e.target.closest&&e.target.closest('a,button,input,.hg')));
+    vc.classList.toggle('hover',!!(e.target.closest&&e.target.closest(HOV)));
   });
-  (function lp(){cx+=(tx-cx)*.2;cy+=(ty-cy)*.2;cu.style.transform='translate3d('+cx+'px,'+cy+'px,0)';requestAnimationFrame(lp)})();
+  document.addEventListener('mouseout',function(e){if(!e.relatedTarget)vc.classList.remove('on')});
+  document.addEventListener('mousedown',function(){
+    vc.classList.add('down');
+    ['','b'].forEach(function(c,i){var d=document.createElement('i');d.className='vburst '+c;d.style.animationDelay=(i*.09)+'s';vm.firstChild.appendChild(d);setTimeout(function(){d.remove()},900)});
+  });
+  document.addEventListener('mouseup',function(){vc.classList.remove('down')});
+  (function lp(){
+    g1x+=(tx-g1x)*.38;g1y+=(ty-g1y)*.38;g2x+=(tx-g2x)*.2;g2y+=(ty-g2y)*.2;put(v1,g1x,g1y);put(v2,g2x,g2y);
+    var vx=tx-lx;lx=tx;rot+=(Math.max(-14,Math.min(14,vx*.8))-rot)*.18;     /* lean into the direction of movement */
+    var tr='rotate('+(135+rot).toFixed(2)+'deg)';   /* 135° turns the V so its tip points to the top-left, like a normal arrow cursor; rotation pivots on the tip, so the hotspot never moves */for(var i=0;i<rots.length;i++)rots[i].style.transform=tr;
+    requestAnimationFrame(lp);
+  })();
   $$('.tilt').forEach(function(c){
     c.addEventListener('mousemove',function(e){var b=c.getBoundingClientRect(),x=(e.clientX-b.left)/b.width-.5,y=(e.clientY-b.top)/b.height-.5;
       c.style.transform='perspective(900px) rotateY('+(x*9)+'deg) rotateX('+(-y*9)+'deg) translateY(-4px)'});
