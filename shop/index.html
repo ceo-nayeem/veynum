@@ -739,9 +739,33 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;background:rgba(5,5,
 
 /* add-to-cart button inside the quick view */
 .qv-btns{align-items:center}
-.addc.inline{position:relative;right:auto;top:auto;opacity:1;transform:none;pointer-events:auto;flex:none}
-.addc.inline:hover{transform:scale(1.1)}
+.addc.inline{position:relative;right:auto;top:auto;opacity:1;transform:none;pointer-events:auto;flex:none;width:auto;height:auto;display:inline-flex;gap:8px;align-items:center;justify-content:center;padding:9px 18px;border-radius:99px;font-size:13.5px;font-weight:600;line-height:1.2;white-space:nowrap;color:var(--text);border:1px solid var(--line2);background:rgba(255,255,255,.03);backdrop-filter:none;-webkit-backdrop-filter:none}
+.addc.inline:hover{transform:none;border-color:transparent;background:rgba(255,255,255,.06)}
+.addc.inline .rg{display:none}
+.addc.inline .sh{border-radius:99px}
+.addc.inline .t2{display:none}
+.addc.inline.ok .t1{display:none}.addc.inline.ok .t2{display:inline}
+.addc.inline.ok{background:var(--grad);color:#050507;border-color:transparent}
+.addc.inline.ok::after{border-radius:99px;inset:-4px}
+.addc.inline .ic1,.addc.inline .ic2{display:inline-grid;place-items:center}
+.addc.inline .ic2{display:none}.addc.inline.ok .ic1{display:none}.addc.inline.ok .ic2{display:inline-grid}
+.addc.inline .cnt{top:-8px;right:-4px}
+html[data-theme=light] .addc.inline{background:rgba(255,255,255,.55);color:var(--text);border-color:var(--line2)}
+html[data-theme=light] .addc.inline.ok{background:var(--grad);color:#fff}
 @media (max-width:680px){.qv-btns .cl{display:none}.qv-btns [data-copy]{padding:9px 13px}}
+
+/* cart sidebar pushes the page instead of covering it (no blur, no dim) */
+html{--dw:0px}
+html.cart-push{--dw:430px}
+body{padding-right:var(--dw);transition:padding-right .55s cubic-bezier(.2,.8,.2,1)}
+.nav{right:var(--dw);transition:right .55s cubic-bezier(.2,.8,.2,1)}
+.totop{right:calc(22px + var(--dw))}
+.toast{left:calc(50% - var(--dw) / 2)}
+.ov.noblur{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+@media (prefers-reduced-motion:reduce){body,.nav{transition:none}}
+html.cart-push .nav-cta .btn-ghost,html.cart-push .nav-cta .kbd{display:none}
+html.cart-push .links a{padding:9px 10px}
+@media (max-width:1380px){html.cart-push .links{display:none}html.cart-push .burger{display:grid}}
 
 /* ===== cart drawer: compact, shows 5+ items without scrolling ===== */
 .drawer{width:min(430px,100%)}
@@ -1503,7 +1527,16 @@ var toastT;function toast(msg){var t=$('#toast');$('#toastt').textContent=msg;t.
 
 /* overlay / scroll lock */
 var ov=$('#ov'),drawer=$('#drawer'),qv=$('#qv');
-function lock(){var open=drawer.classList.contains('open')||qv.classList.contains('open');ov.classList.toggle('on',open);document.documentElement.style.overflow=open?'hidden':''}
+var pushT;
+function lock(){
+  var c=drawer.classList.contains('open'),q=qv.classList.contains('open'),push=c&&!q&&innerWidth>=900,cover=q||(c&&!push);
+  ov.classList.toggle('on',cover);ov.classList.toggle('noblur',!q);
+  document.documentElement.style.overflow=cover?'hidden':'';
+  var was=document.documentElement.classList.contains('cart-push');
+  document.documentElement.classList.toggle('cart-push',push);
+  if(was!==push){clearTimeout(pushT);pushT=setTimeout(function(){dispatchEvent(new Event('resize'))},620)}
+}
+addEventListener('resize',function(){if(drawer.classList.contains('open'))lock()});
 
 /* ===== tape ===== */
 (function(){
@@ -1582,7 +1615,7 @@ function renderCart(){
 }
 function openCart(){$('#toast').classList.remove('on');drawer.classList.remove('sold');drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');lock()}
 function closeCart(){drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');setTimeout(function(){drawer.classList.remove('sold')},500);lock()}
-$('#cartbtn').addEventListener('click',openCart);
+$('#cartbtn').addEventListener('click',function(){if(drawer.classList.contains('open'))closeCart();else openCart()});
 $('#dclose').addEventListener('click',closeCart);
 $('#keep').addEventListener('click',closeCart);
 ov.addEventListener('click',function(){closeCart();closeView()});
@@ -1629,7 +1662,7 @@ function openView(id,keepHash){
      '<ul>'+p.feat.map(function(f){return '<li>'+esc(f)+'</li>'}).join('')+'</ul>'+
      '<div class="spec">'+p.spec.map(function(s){return '<div><span>'+esc(s[0]).toUpperCase()+'</span><b style="font-weight:500">'+esc(s[1])+'</b></div>'}).join('')+'</div>'+
      '<div class="qv-buy"><div class="price">'+(p.was?'<s>'+tk(p.was)+'</s>':'')+tk(p.price)+' <small>one-time</small></div>'+
-     '<div class="qv-btns"><button class="btn btn-ghost btn-sm" data-copy aria-label="Copy link">'+ico('i-copy',15)+'<span class="cl"> Copy link</span></button><button class="addc inline" data-add data-id="'+p.id+'" aria-label="Add '+esc(p.name)+' to cart" title="Add to cart"><span class="rg"></span><span class="sh"></span><span class="ic1">'+ico('i-cart',19)+'</span><span class="ic2">'+ico('i-check',19)+'</span><em class="cnt"></em></button><button class="btn btn-primary" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',16)+'</button></div></div></div>';
+     '<div class="qv-btns"><button class="btn btn-ghost btn-sm" data-copy aria-label="Copy link">'+ico('i-copy',15)+'<span class="cl"> Copy link</span></button><button class="addc inline" data-add data-id="'+p.id+'" aria-label="Add '+esc(p.name)+' to cart" title="Add to cart"><span class="rg"></span><span class="sh"></span><span class="ic1">'+ico('i-cart',16)+'</span><span class="ic2">'+ico('i-check',16)+'</span><span class="tx t1">Add to cart</span><span class="tx t2">Added</span><em class="cnt"></em></button><button class="btn btn-primary" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',16)+'</button></div></div></div>';
   syncBadges();
   qv.classList.add('open');qv.setAttribute('aria-hidden','false');qv.scrollTop=0;lock();
   setTimeout(function(){var pg=$('.mring .pg',qv);if(pg)pg.style.strokeDashoffset=(C*(1-p.mock.pct/100)).toFixed(1)},120);
