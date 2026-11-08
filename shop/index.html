@@ -492,6 +492,25 @@ footer{border-top:1px solid var(--line);padding:64px 0 30px;background:rgba(5,5,
 .pact{display:grid;grid-template-columns:1fr 1.3fr;gap:10px;padding:0 22px 22px;position:relative;z-index:3}
 .pact .btn{justify-content:center;padding-inline:14px}
 
+/* ===== Visit Software — opens the live app in a new tab ===== */
+.btn-visit{--vfill:#0b0c12;gap:9px;justify-content:center;border:1px solid transparent;background:linear-gradient(var(--vfill),var(--vfill)) padding-box,var(--grad) border-box;color:var(--text);transition:box-shadow .3s,transform .25s}
+.btn-visit:hover{box-shadow:-8px 0 24px rgba(255,43,58,.42),8px 0 24px rgba(32,184,255,.42)}
+.btn-visit .live{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none;animation:livepulse 2.2s ease-out infinite}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(32,184,255,.65)}70%,100%{box-shadow:0 0 0 8px rgba(32,184,255,0)}}
+.btn-visit svg{transition:transform .3s cubic-bezier(.2,.9,.3,1.4)}
+.btn-visit:hover svg{transform:translate(3px,-3px)}
+.btn-visit.is-off{background:none;border:1px dashed var(--line2);color:var(--muted);cursor:default;box-shadow:none}
+.btn-visit.is-off .live{background:var(--muted);animation:none}
+.pact .btn-visit{grid-column:1/-1}
+.qv-visit{flex:1 1 100%;justify-content:space-between;padding:clamp(10px,1.9vh,13px) 20px;font-size:14px}
+.qv-btns:has(.qv-visit){flex:1 1 100%}
+.qv-visit .vk-a,.qv-visit .vk-b{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.qv-visit .vk-a{flex:none}
+.qv-visit .vk-b{flex:1 1 0;justify-content:flex-end}
+.qv-visit .host{font-family:var(--mono);font-style:normal;font-weight:400;font-size:10.5px;letter-spacing:0;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:680px){.qv-visit .host{display:none}.qv-visit{flex:1 1 auto;justify-content:center;padding:9px 16px;font-size:13.5px}}
+@media (prefers-reduced-motion:reduce){.btn-visit .live{animation:none}.btn-visit:hover svg{transform:none}}
+
 /* round add-to-cart button: shows when hovering a card */
 .addc{position:absolute;right:16px;top:134px;z-index:4;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:#fff;border:1px solid transparent;background:linear-gradient(rgba(8,9,13,.9),rgba(8,9,13,.9)) padding-box,var(--grad) border-box;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transform:translateY(8px) scale(.6);pointer-events:none;transition:opacity .3s,transform .4s cubic-bezier(.2,.9,.3,1.4),box-shadow .3s,background .3s,color .3s}
 .sp:hover .addc,.addc:focus-visible,.addc.ok{opacity:1;transform:none;pointer-events:auto}
@@ -861,6 +880,11 @@ html.cart-push .links a{padding:9px 10px}
 .sp .pfoot{margin-top:auto;padding-top:clamp(6px,1vh,10px)}
 .sp .pact{padding:clamp(8px,1.3vh,12px) 18px clamp(12px,1.8vh,16px)}
 .sp .addc{top:calc(var(--ch)/2 - 54px)!important}
+/* Visit Software adds one button row to every card. The card grows by exactly that row, so the image (50% of the old height), text and price keep the proportions above. */
+.shopgrid{--vrow:calc(clamp(7px,1.15vh,9px)*2 + 31px)}
+@media (max-width:680px){.shopgrid{--vrow:52px}}
+.sp{height:calc(var(--ch) + var(--vrow))}
+.sp .art{flex:0 0 calc(var(--ch)/2)}
 /* ===== theme toggle button ===== */
 .themebtn{position:relative;width:42px;height:42px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;flex:none;transition:.25s;color:var(--text);background:rgba(255,255,255,.03)}
 .themebtn:hover{border-color:var(--text);box-shadow:-6px 0 18px rgba(255,43,58,.35),6px 0 18px rgba(32,184,255,.35)}
@@ -894,6 +918,7 @@ html[data-theme=light] .links a:hover{background:rgba(12,16,32,.05)}
 html[data-theme=light] .kbd:hover,html[data-theme=light] .cartbtn:hover{border-color:var(--text);color:var(--text)}
 html[data-theme=light] .cartbtn,html[data-theme=light] .pill,html[data-theme=light] .btn-ghost,html[data-theme=light] .fchip{background:rgba(255,255,255,.55)}
 html[data-theme=light] .btn-ghost:hover{background:rgba(255,255,255,.95)}
+html[data-theme=light] .btn-visit{--vfill:#fff}
 html[data-theme=light] .chip,html[data-theme=light] .totop,html[data-theme=light] .toast{background:rgba(255,255,255,.88);color:var(--text)}
 html[data-theme=light] .marquee{background:rgba(255,255,255,.55)}
 html[data-theme=light] footer{background:rgba(255,255,255,.85)}
@@ -1012,6 +1037,7 @@ html[data-theme=light] .qv-r li{color:#2b3345}
   <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z"/></symbol>
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5h16v10.5H10l-4.5 3.5V16H4z"/></symbol>
   <symbol id="i-card" viewBox="0 0 24 24"><rect x="3" y="5.5" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h3"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
 </svg>
 
 
@@ -1128,7 +1154,7 @@ html[data-theme=light] .qv-r li{color:#2b3345}
   <div class="sec-head rv">
     <div><span class="eyebrow"><span class="sl r">/</span> Catalog <span class="sl b">/</span></span>
     <h2>Pick your <span class="grad">next tool</span></h2>
-    <p class="lead2">Every product is a one-time purchase with free updates. Tap <b>View</b> for the full detail or <b>Purchase</b> to add it straight to your cart.</p></div>
+    <p class="lead2">Every product is a one-time purchase with free updates. Tap <b>View</b> for the full detail, <b>Visit Software</b> to try it live, or <b>Purchase</b> to add it straight to your cart.</p></div>
   </div>
   <div class="toolbar rv">
     <div class="fchips" id="chips" role="group" aria-label="Filter by category"></div>
@@ -1469,44 +1495,46 @@ var SHOP={
 };
 
 /* ✏️ PRODUCTS — names, prices (৳ BDT), text and links. Everything on the page is built from this list.
-   buyUrl: leave '' to use the built-in cart, or paste a direct payment link (Gumroad, WooCommerce, SSLCommerz, etc.) to send "Purchase" straight there. */
+   buyUrl:  leave '' to use the built-in cart, or paste a direct payment link (Gumroad, WooCommerce, SSLCommerz, etc.) to send "Purchase" straight there.
+   liveUrl: the live software address (full https:// link). When filled, a "Visit Software" button opens it in a new tab on the card, the quick view and the finder.
+            Leave '' and the card shows a disabled "Coming soon" button instead. */
 var PRODUCTS=[
  {id:'habit-os',name:'Habit OS',cat:'Productivity',badge:'Popular',a:'#ff2b3a',b:'#ff6b3a',price:1490,was:1990,
   tagline:'Build streaks that stick.',
   desc:'Track daily habits, watch your 84-day streak grid fill up and get gentle nudges that keep you consistent. Built on the same method as the VEYNUM dashboard.',
   feat:['Daily and weekly habits','84-day streak grid','Smart reminders','Weekly review report'],
   tags:['Streaks','Reminders'],spec:[['Platform','Web · Android · iOS'],['License','Lifetime · 1 user'],['Updates','Free for life']],
-  goal:'habits',why:'Habit OS turns a good intention into a daily streak you can see, so consistency stops depending on motivation.',mock:{pct:72,bars:[64,88,42,95],label:'STREAK 21'},buyUrl:''},
+  goal:'habits',why:'Habit OS turns a good intention into a daily streak you can see, so consistency stops depending on motivation.',mock:{pct:72,bars:[64,88,42,95],label:'STREAK 21'},liveUrl:'https://habitos-livid.vercel.app/',buyUrl:''},
  {id:'money-map',name:'Money Map',cat:'Finance',badge:'',a:'#20b8ff',b:'#4d7cff',price:1990,was:0,
   tagline:'See where every taka goes.',
   desc:'Plan a monthly budget, log spending in seconds and watch savings grow toward goals. Built around how people in Bangladesh actually earn, spend and save.',
   feat:['Monthly budget planner','Fast expense logging','Savings goals','Bank and mobile wallet tracking'],
   tags:['Budget','Savings'],spec:[['Platform','Web · Android · iOS'],['License','Lifetime · 1 user'],['Currency','৳ BDT first']],
-  goal:'money',why:'Money Map shows exactly where your income goes and which small changes grow your savings fastest.',mock:{pct:58,bars:[80,52,68,34],label:'SAVED 58%'},buyUrl:''},
+  goal:'money',why:'Money Map shows exactly where your income goes and which small changes grow your savings fastest.',mock:{pct:58,bars:[80,52,68,34],label:'SAVED 58%'},liveUrl:'https://money-manager-nine-flame.vercel.app/',buyUrl:''},
  {id:'fit-core',name:'Fit Core',cat:'Health',badge:'New',a:'#ff2b3a',b:'#20b8ff',price:1490,was:0,
   tagline:'Train, eat and recover with a plan.',
   desc:'Log workouts, meals and sleep in one place, then see how they connect to your energy and focus through the week.',
   feat:['Workout logging','Meal and water tracking','Sleep and recovery view','Weekly health score'],
   tags:['Workouts','Sleep'],spec:[['Platform','Web · Android · iOS'],['License','Lifetime · 1 user'],['Updates','Free for life']],
-  goal:'health',why:'Fit Core ties training, food and sleep together so you can see what actually improves your energy.',mock:{pct:81,bars:[90,60,75,48],label:'SCORE 81'},buyUrl:''},
+  goal:'health',why:'Fit Core ties training, food and sleep together so you can see what actually improves your energy.',mock:{pct:81,bars:[90,60,75,48],label:'SCORE 81'},liveUrl:'https://transform-mu-one.vercel.app/',buyUrl:''},
  {id:'deep-focus',name:'Deep Focus',cat:'Productivity',badge:'',a:'#20b8ff',b:'#20b8ff',price:1190,was:0,
   tagline:'Protect your best hours.',
   desc:'Focus timers, a calm task list and session stats that help you do fewer things, better. Includes distraction-free full-screen mode.',
   feat:['Focus and break timers','Daily top-3 task list','Session statistics','Full-screen focus mode'],
   tags:['Timer','Tasks'],spec:[['Platform','Web · Desktop'],['License','Lifetime · 1 user'],['Updates','Free for life']],
-  goal:'focus',why:'Deep Focus gives you a timer, a short task list and nothing else, so your attention goes where it matters.',mock:{pct:64,bars:[55,92,70,38],label:'FOCUS 4H'},buyUrl:''},
+  goal:'focus',why:'Deep Focus gives you a timer, a short task list and nothing else, so your attention goes where it matters.',mock:{pct:64,bars:[55,92,70,38],label:'FOCUS 4H'},liveUrl:'',buyUrl:''},
  {id:'life-journal',name:'Life Journal',cat:'Productivity',badge:'',a:'#ff2b3a',b:'#ff2b3a',price:990,was:0,
   tagline:'Understand yourself, daily.',
   desc:'Guided prompts and mood tracking that help you reflect, spot patterns and make better decisions. Private by design.',
   feat:['Guided daily prompts','Mood and pattern tracking','Searchable entries','Private and encrypted'],
   tags:['Reflection','Mood'],spec:[['Platform','Web · Android · iOS'],['License','Lifetime · 1 user'],['Privacy','Private by design']],
-  goal:'reflect',why:'Life Journal asks the right questions each day, then shows the patterns you would never notice alone.',mock:{pct:47,bars:[40,66,52,84],label:'MOOD +12%'},buyUrl:''},
+  goal:'reflect',why:'Life Journal asks the right questions each day, then shows the patterns you would never notice alone.',mock:{pct:47,bars:[40,66,52,84],label:'MOOD +12%'},liveUrl:'https://journalos.vercel.app/',buyUrl:''},
  {id:'project-deck',name:'Project Deck',cat:'Business',badge:'Pro',a:'#8fd8ff',b:'#ff7b84',price:2990,was:3490,
   tagline:'Run projects like a studio.',
   desc:'Boards, timelines and team views to plan, assign and ship work. Made for small teams and solo founders who need clarity without the bloat.',
   feat:['Boards and timelines','Team roles and sharing','Progress dashboards','Client-ready reports'],
   tags:['Teams','Timelines'],spec:[['Platform','Web · Desktop'],['License','Lifetime · up to 5 users'],['Updates','Free for life']],
-  goal:'work',why:'Project Deck gives your team one clear board for what is planned, in progress and shipped.',mock:{pct:88,bars:[96,72,58,80],label:'SHIPPED 88%'},buyUrl:''}
+  goal:'work',why:'Project Deck gives your team one clear board for what is planned, in progress and shipped.',mock:{pct:88,bars:[96,72,58,80],label:'SHIPPED 88%'},liveUrl:'',buyUrl:''}
 ];
 var GOALS=[
  {k:'habits',t:'Build habits that stick',i:'i-bolt'},{k:'money',t:'Get control of my money',i:'i-wallet'},
@@ -1521,6 +1549,17 @@ function unit(p,disc){return Math.round(p.price*(1-(disc||0)/100))}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function ico(n,sz){return '<svg class="i"'+(sz?' style="width:'+sz+'px;height:'+sz+'px"':'')+'><use href="#'+n+'"/></svg>'}
 function artHTML(p,badge){return '<div class="art" style="--a:'+p.a+';--b:'+p.b+'">'+(badge&&p.badge?'<span class="badge">'+esc(p.badge)+'</span>':'')+(badge&&p.was?'<span class="off">−'+Math.round((1-p.price/p.was)*100)+'%</span>':'')+'<i class="l"></i><i class="r"></i><em>'+esc(p.name.toUpperCase().replace(' ',' // '))+'</em></div>'}
+
+/* Visit Software: opens the live app in a new tab. Real button only when liveUrl is a full http(s) address, otherwise a disabled placeholder (card) or nothing (quick view). */
+function hasLive(p){return /^https?:\/\//i.test(p.liveUrl||'')}
+function hostOf(u){return String(u).replace(/^https?:\/\//i,'').replace(/[\/?#].*$/,'').replace(/^www\./i,'')}
+function visitHTML(p,mode){
+  var modal=mode==='modal';
+  if(!hasLive(p))return modal?'':'<span class="btn btn-sm btn-visit is-off" title="Live link coming soon"><span class="live"></span>Coming soon</span>';
+  var open='<a class="btn btn-visit'+(modal?' qv-visit':' btn-sm')+'" href="'+esc(p.liveUrl)+'" target="_blank" rel="noopener noreferrer" draggable="false" data-visit data-id="'+p.id+'" aria-label="Visit '+esc(p.name)+' live (opens in a new tab)">';
+  if(modal)return open+'<span class="vk-a"><span class="live"></span>Visit Software</span><span class="vk-b"><em class="host">'+esc(hostOf(p.liveUrl))+'</em>'+ico('i-ext',16)+'</span></a>';
+  return open+'<span class="live"></span>Visit Software'+ico('i-ext',15)+'</a>';
+}
 
 /* toast */
 var toastT;function toast(msg){var t=$('#toast');$('#toastt').textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},2600)}
@@ -1556,7 +1595,7 @@ function cardHTML(p,i){
   '<div class="pbody"><span class="cat">'+esc(p.cat)+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.tagline)+' '+esc(p.desc.split('. ')[0].replace(/\.$/,''))+'.</p>'+
   '<div class="ptags">'+p.tags.map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('')+'<span class="tag">One-time</span></div>'+
   '<div class="pfoot"><div class="price">'+(p.was?'<s>'+tk(p.was)+'</s>':'')+tk(p.price)+'</div></div></div>'+
-  '<div class="pact"><button class="btn btn-ghost btn-sm" data-view data-id="'+p.id+'">'+ico('i-eye',16)+' View</button><button class="btn btn-primary btn-sm" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',15)+'</button></div></article>';
+  '<div class="pact"><button class="btn btn-ghost btn-sm" data-view data-id="'+p.id+'">'+ico('i-eye',16)+' View</button><button class="btn btn-primary btn-sm" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',15)+'</button>'+visitHTML(p,'card')+'</div></article>';
 }
 function renderGrid(){
   var q=F.q.toLowerCase(),L=PRODUCTS.filter(function(p){return (F.cat==='All'||p.cat===F.cat)&&(!q||(p.name+' '+p.cat+' '+p.tagline+' '+p.desc+' '+p.tags.join(' ')).toLowerCase().indexOf(q)>-1)});
@@ -1662,7 +1701,7 @@ function openView(id,keepHash){
      '<ul>'+p.feat.map(function(f){return '<li>'+esc(f)+'</li>'}).join('')+'</ul>'+
      '<div class="spec">'+p.spec.map(function(s){return '<div><span>'+esc(s[0]).toUpperCase()+'</span><b style="font-weight:500">'+esc(s[1])+'</b></div>'}).join('')+'</div>'+
      '<div class="qv-buy"><div class="price">'+(p.was?'<s>'+tk(p.was)+'</s>':'')+tk(p.price)+' <small>one-time</small></div>'+
-     '<div class="qv-btns"><button class="btn btn-ghost btn-sm" data-copy aria-label="Copy link">'+ico('i-copy',15)+'<span class="cl"> Copy link</span></button><button class="addc inline" data-add data-id="'+p.id+'" aria-label="Add '+esc(p.name)+' to cart" title="Add to cart"><span class="rg"></span><span class="sh"></span><span class="ic1">'+ico('i-cart',16)+'</span><span class="ic2">'+ico('i-check',16)+'</span><span class="tx t1">Add to cart</span><span class="tx t2">Added</span><em class="cnt"></em></button><button class="btn btn-primary" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',16)+'</button></div></div></div>';
+     '<div class="qv-btns"><button class="btn btn-ghost btn-sm" data-copy aria-label="Copy link">'+ico('i-copy',15)+'<span class="cl"> Copy link</span></button><button class="addc inline" data-add data-id="'+p.id+'" aria-label="Add '+esc(p.name)+' to cart" title="Add to cart"><span class="rg"></span><span class="sh"></span><span class="ic1">'+ico('i-cart',16)+'</span><span class="ic2">'+ico('i-check',16)+'</span><span class="tx t1">Add to cart</span><span class="tx t2">Added</span><em class="cnt"></em></button><button class="btn btn-primary" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',16)+'</button>'+visitHTML(p,'modal')+'</div></div></div>';
   syncBadges();
   qv.classList.add('open');qv.setAttribute('aria-hidden','false');qv.scrollTop=0;lock();
   setTimeout(function(){var pg=$('.mring .pg',qv);if(pg)pg.style.strokeDashoffset=(C*(1-p.mock.pct/100)).toFixed(1)},120);
@@ -1758,7 +1797,7 @@ var sel={};
     var p=PRODUCTS.filter(function(x){return x.goal===b.getAttribute('data-g')})[0];
     res.classList.remove('done');res.classList.add('busy');msg.textContent='Scanning 6 tools…';clearTimeout(tm);
     tm=setTimeout(function(){
-      out.innerHTML='<div class="mini" style="--a:'+p.a+';--b:'+p.b+'"><i class="l"></i><i class="r"></i></div><span class="eyebrow"><span class="sl r">/</span> Best match <span class="sl b">/</span></span><h3>'+esc(p.name)+'</h3><p>'+esc(p.why)+'</p><div class="price">'+tk(p.price)+'</div><div class="row"><button class="btn btn-ghost btn-sm" data-view data-id="'+p.id+'">'+ico('i-eye',16)+' View</button><button class="btn btn-primary btn-sm" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',15)+'</button></div>';
+      out.innerHTML='<div class="mini" style="--a:'+p.a+';--b:'+p.b+'"><i class="l"></i><i class="r"></i></div><span class="eyebrow"><span class="sl r">/</span> Best match <span class="sl b">/</span></span><h3>'+esc(p.name)+'</h3><p>'+esc(p.why)+'</p><div class="price">'+tk(p.price)+'</div><div class="row"><button class="btn btn-ghost btn-sm" data-view data-id="'+p.id+'">'+ico('i-eye',16)+' View</button><button class="btn btn-primary btn-sm" data-buy data-id="'+p.id+'">Purchase '+ico('i-arrow',15)+'</button>'+(hasLive(p)?visitHTML(p,'card'):'')+'</div>';
       res.classList.remove('busy');res.classList.add('done');
     },reduce?0:900);
   });
