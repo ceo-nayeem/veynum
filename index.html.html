@@ -367,6 +367,22 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 .price{font-family:var(--head);font-size:24px;font-weight:600}
 .price small{font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400}
 
+/* ===== Visit Software — opens the live app in a new tab ===== */
+/* The card is no longer one big <a> (a link inside a link is invalid HTML). The "Details" link stretches over the whole card instead, so the card stays fully clickable. */
+.prod{position:relative}
+.prod .badge{pointer-events:none}
+.prod .alink.stretch::after{content:"";position:absolute;inset:0;z-index:1}
+.pvisit{position:relative;z-index:2;display:grid;margin-top:6px}
+.btn-visit{--vfill:#0b0c12;gap:9px;justify-content:center;border:1px solid transparent;background:linear-gradient(var(--vfill),var(--vfill)) padding-box,var(--grad) border-box;color:var(--text);transition:box-shadow .3s,transform .25s}
+.btn-visit:hover{box-shadow:-8px 0 24px rgba(255,43,58,.42),8px 0 24px rgba(32,184,255,.42)}
+.btn-visit .live{width:7px;height:7px;border-radius:50%;background:var(--blue);flex:none;animation:livepulse 2.2s ease-out infinite}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(32,184,255,.65)}70%,100%{box-shadow:0 0 0 8px rgba(32,184,255,0)}}
+.btn-visit svg.i{width:15px;height:15px;transition:transform .3s cubic-bezier(.2,.9,.3,1.4)}
+.btn-visit:hover svg.i{transform:translate(3px,-3px)}
+.btn-visit.is-off{background:none;border:1px dashed var(--line2);color:var(--muted);cursor:default;box-shadow:none}
+.btn-visit.is-off .live{background:var(--muted);animation:none}
+@media (prefers-reduced-motion:reduce){.btn-visit .live{animation:none}.btn-visit:hover svg.i{transform:none}}
+
 /* cta */
 .cta{padding:110px 0 100px}
 .cta-box{position:relative;border:1px solid var(--line2);border-radius:30px;padding:clamp(40px,7vw,86px) 24px;text-align:center;overflow:hidden;background:radial-gradient(50% 120% at 0% 100%,rgba(255,43,58,.28),transparent 70%),radial-gradient(50% 120% at 100% 100%,rgba(20,170,255,.28),transparent 70%),rgba(8,9,13,.85)}
@@ -474,6 +490,7 @@ html[data-theme=light] .links a:hover{background:rgba(12,16,32,.05)}
 html[data-theme=light] .kbd:hover,html[data-theme=light] .cartbtn:hover{border-color:var(--text);color:var(--text)}
 html[data-theme=light] .cartbtn,html[data-theme=light] .pill,html[data-theme=light] .btn-ghost,html[data-theme=light] .fchip{background:rgba(255,255,255,.55)}
 html[data-theme=light] .btn-ghost:hover{background:rgba(255,255,255,.95)}
+html[data-theme=light] .btn-visit{--vfill:#fff}
 html[data-theme=light] .chip,html[data-theme=light] .totop,html[data-theme=light] .toast{background:rgba(255,255,255,.88);color:var(--text)}
 html[data-theme=light] .marquee{background:rgba(255,255,255,.55)}
 html[data-theme=light] footer{background:rgba(255,255,255,.85)}
@@ -577,6 +594,7 @@ html[data-theme=light] .ci .rm:hover{background:rgba(255,43,58,.12)}
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+<symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
 </svg>
 
 <!-- HEADER: only the small logo mark lives here (like a normal website). Links open separate pages. -->
@@ -844,14 +862,15 @@ html[data-theme=light] .ci .rm:hover{background:rgba(255,43,58,.12)}
       <div class="rail-ctl"><button id="rprev" aria-label="Previous"><svg class="i"><use href="#i-left"/></svg></button><button id="rnext" aria-label="Next"><svg class="i"><use href="#i-arrow"/></svg></button></div>
     </div>
   </div>
-  <!-- ✏️ EDIT HERE: product names, descriptions and prices (sample content) -->
+  <!-- ✏️ EDIT HERE: product names, descriptions and prices (sample content).
+       "Visit Software" link = the href of each .btn-visit. For a product that is not live yet, use the grey <span class="btn btn-sm btn-visit is-off"> "Coming soon" version. -->
   <div class="rail rv" id="rail">
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#ff2b3a;--b:#ff6b3a"><div class="art"><span class="badge">Popular</span><i class="l"></i><i class="r"></i><em>HABIT // OS</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Habit OS</h3><p>Track daily habits, build streaks and review your weekly progress.</p><div class="pfoot"><div class="price">$19 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#20b8ff;--b:#4d7cff"><div class="art"><i class="l"></i><i class="r"></i><em>MONEY // MAP</em></div><div class="pbody"><span class="cat">Finance</span><h3>Money Map</h3><p>Plan budgets, track spending and watch your savings goals grow.</p><div class="pfoot"><div class="price">$24 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#ff2b3a;--b:#20b8ff"><div class="art"><span class="badge">New</span><i class="l"></i><i class="r"></i><em>FIT // CORE</em></div><div class="pbody"><span class="cat">Health</span><h3>Fit Core</h3><p>Log workouts, meals and body metrics, then see trends over time.</p><div class="pfoot"><div class="price">$19 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#20b8ff;--b:#20b8ff"><div class="art"><i class="l"></i><i class="r"></i><em>DEEP // FOCUS</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Deep Focus</h3><p>Timers, task lists and focus sessions that protect your attention.</p><div class="pfoot"><div class="price">$15 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#ff2b3a;--b:#ff2b3a"><div class="art"><i class="l"></i><i class="r"></i><em>LIFE // JOURNAL</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Life Journal</h3><p>Guided reflection prompts to understand yourself and plan ahead.</p><div class="pfoot"><div class="price">$12 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
-    <a href="products.html" data-page="shop" class="prod tilt" style="--a:#8fd8ff;--b:#ff7b84"><div class="art"><span class="badge">Pro</span><i class="l"></i><i class="r"></i><em>PROJECT // DECK</em></div><div class="pbody"><span class="cat">Business</span><h3>Project Deck</h3><p>Manage projects, clients and campaigns in one lightweight workspace.</p><div class="pfoot"><div class="price">$39 <small>one-time</small></div><span class="alink">Details <svg class="i"><use href="#i-arrow"/></svg></span></div></div></a>
+    <article class="prod tilt" style="--a:#ff2b3a;--b:#ff6b3a"><div class="art"><span class="badge">Popular</span><i class="l"></i><i class="r"></i><em>HABIT // OS</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Habit OS</h3><p>Track daily habits, build streaks and review your weekly progress.</p><div class="pfoot"><div class="price">$19 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Habit OS details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><a class="btn btn-sm btn-visit" href="https://habitos-livid.vercel.app/" target="_blank" rel="noopener noreferrer" draggable="false" aria-label="Visit Habit OS live (opens in a new tab)"><span class="live"></span>Visit Software <svg class="i"><use href="#i-ext"/></svg></a></div></div></article>
+    <article class="prod tilt" style="--a:#20b8ff;--b:#4d7cff"><div class="art"><i class="l"></i><i class="r"></i><em>MONEY // MAP</em></div><div class="pbody"><span class="cat">Finance</span><h3>Money Map</h3><p>Plan budgets, track spending and watch your savings goals grow.</p><div class="pfoot"><div class="price">$24 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Money Map details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><a class="btn btn-sm btn-visit" href="https://money-manager-nine-flame.vercel.app/" target="_blank" rel="noopener noreferrer" draggable="false" aria-label="Visit Money Map live (opens in a new tab)"><span class="live"></span>Visit Software <svg class="i"><use href="#i-ext"/></svg></a></div></div></article>
+    <article class="prod tilt" style="--a:#ff2b3a;--b:#20b8ff"><div class="art"><span class="badge">New</span><i class="l"></i><i class="r"></i><em>FIT // CORE</em></div><div class="pbody"><span class="cat">Health</span><h3>Fit Core</h3><p>Log workouts, meals and body metrics, then see trends over time.</p><div class="pfoot"><div class="price">$19 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Fit Core details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><a class="btn btn-sm btn-visit" href="https://transform-mu-one.vercel.app/" target="_blank" rel="noopener noreferrer" draggable="false" aria-label="Visit Fit Core live (opens in a new tab)"><span class="live"></span>Visit Software <svg class="i"><use href="#i-ext"/></svg></a></div></div></article>
+    <article class="prod tilt" style="--a:#20b8ff;--b:#20b8ff"><div class="art"><i class="l"></i><i class="r"></i><em>DEEP // FOCUS</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Deep Focus</h3><p>Timers, task lists and focus sessions that protect your attention.</p><div class="pfoot"><div class="price">$15 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Deep Focus details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><span class="btn btn-sm btn-visit is-off" title="Live link coming soon"><span class="live"></span>Coming soon</span></div></div></article>
+    <article class="prod tilt" style="--a:#ff2b3a;--b:#ff2b3a"><div class="art"><i class="l"></i><i class="r"></i><em>LIFE // JOURNAL</em></div><div class="pbody"><span class="cat">Productivity</span><h3>Life Journal</h3><p>Guided reflection prompts to understand yourself and plan ahead.</p><div class="pfoot"><div class="price">$12 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Life Journal details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><a class="btn btn-sm btn-visit" href="https://journalos.vercel.app/" target="_blank" rel="noopener noreferrer" draggable="false" aria-label="Visit Life Journal live (opens in a new tab)"><span class="live"></span>Visit Software <svg class="i"><use href="#i-ext"/></svg></a></div></div></article>
+    <article class="prod tilt" style="--a:#8fd8ff;--b:#ff7b84"><div class="art"><span class="badge">Pro</span><i class="l"></i><i class="r"></i><em>PROJECT // DECK</em></div><div class="pbody"><span class="cat">Business</span><h3>Project Deck</h3><p>Manage projects, clients and campaigns in one lightweight workspace.</p><div class="pfoot"><div class="price">$39 <small>one-time</small></div><a href="products.html" data-page="shop" class="alink stretch" draggable="false" aria-label="Project Deck details">Details <svg class="i"><use href="#i-arrow"/></svg></a></div><div class="pvisit"><span class="btn btn-sm btn-visit is-off" title="Live link coming soon"><span class="live"></span>Coming soon</span></div></div></article>
   </div>
 </section>
 
